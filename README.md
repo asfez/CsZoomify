@@ -1,7 +1,7 @@
 CsZoomify
 =========
 
-A c# library to create Zoomify compatible tiles from big images.
+A .NET c# library to create Zoomify compatible tiles from big images.
 
 Usage
 
