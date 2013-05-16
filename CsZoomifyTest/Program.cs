@@ -12,29 +12,62 @@ namespace CsZoomifyTest
         static void Main(string[] args)
         {
             
-            if (args.Length < 2)
+            if (args.Length <3)
             {
-                Console.WriteLine("usage : cszoomify.exe [imagefilame] [targetpath]");
+                Console.WriteLine("usage : cszoomify.exe [dir|file] [imagefilame] [targetpath]");
+                Console.ReadLine();
                 return;
             }
 
-            var file = args[0];
-            var target = args[1];
+            var action = args[0];
+            var file = args[1];
+            var target = args[2];
 
-            if (!File.Exists(file))
+            switch (action.ToLower())
             {
-                Console.WriteLine(String.Format("The file {0} doesn't exist !", 0));
-                return;
+                case "file" :
+                    {
+                        if (!File.Exists(file))
+                        {
+                            Console.WriteLine(String.Format("The file {0} doesn't exist !", 0));
+                            return;
+                        }
+
+                        var img = new ZoomifyImage(file);
+                        for (int i = 0; i < img.SizeCoeffByZoomLevel.Length; i++)
+                        {
+                            img.SizeCoeffByZoomLevel[i] = 1.5;
+                        }
+                        img.SizeCoeffByZoomLevel[0] = 3;
+                        img.SizeCoeffByZoomLevel[img.SizeCoeffByZoomLevel.Length - 1] = 1;
+                        img.Zoomify(target);
+                        break;
+                    }
+                case "dir" :
+                    {
+                        if (!Directory.Exists(file))
+                        {
+                            Console.WriteLine(String.Format("The directory {0} doesn't exist !", 0));
+                            return;
+                        }
+
+
+                        Action<ZoomifyImage>  config = img =>
+                            {
+                                for (int i = 0; i < img.SizeCoeffByZoomLevel.Length; i++)
+                                {
+                                    img.SizeCoeffByZoomLevel[i] = 1.5;
+                                }
+                                img.SizeCoeffByZoomLevel[0] = 3;
+                                img.SizeCoeffByZoomLevel[img.SizeCoeffByZoomLevel.Length - 1] = 1;
+                            };
+
+                        ZoomifyImage.ZoomifyDirectory(file, "*.jpg",target, config);
+                        break;
+                    }
             }
 
-            var img = new ZoomifyImage(file);
-            for (int i = 0; i < img.SizeCoeffByZoomLevel.Length; i++)
-            {
-                img.SizeCoeffByZoomLevel[i] = 1.5;
-            }
-            img.SizeCoeffByZoomLevel[0] = 3;
-            img.SizeCoeffByZoomLevel[img.SizeCoeffByZoomLevel.Length - 1] = 1;
-            img.Zoomify(target);
+            
             Console.WriteLine("Done ! Press enter to close.");
             Console.ReadLine();
         }

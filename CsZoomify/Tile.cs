@@ -28,7 +28,7 @@ namespace CsZoomify
         
         internal void Write()
         {
-            var target = new DirectoryInfo(ZoomifyImage.Directory.FullName + "\\tilegroup" + Group);
+            var target = new DirectoryInfo(ZoomifyImage.Directory.FullName + "\\TileGroup" + Group);
             if(!target.Exists) target.Create();
             ImageUtilities.Crop(ZoomifyImage.Image, OriginalRectangle,
                                 new Size(

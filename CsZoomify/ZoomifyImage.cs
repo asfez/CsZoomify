@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.IO;
+using System.Linq;
 using CsZoomify;
 
 #endregion
@@ -81,12 +82,52 @@ namespace CsZoomifyTest
         {
             Directory = new DirectoryInfo(targetDirectory);
             if(!Directory.Exists) Directory.Create();
-
             foreach (var tile in Tiles)
             {
                 tile.Write();
             }
 
+            WriteXmlProperties();
+        }
+
+        private void WriteXmlProperties()
+        {
+            File.WriteAllText(Directory.FullName + "\\ImageProperties.xml",
+                              String.Format(
+                                  "<IMAGE_PROPERTIES WIDTH=\"{0}\" HEIGHT=\"{1}\" NUMTILES=\"{2}\" NUMIMAGES=\"1\" VERSION=\"1.8\" TILESIZE=\"{3}\" />",
+                                  Size.Width, Size.Height, Tiles.Count(), TileSize));
+        }
+
+        /// <summary>
+        /// Zoomifies all the images in a directorythe directory.
+        /// </summary>
+        /// <param name="directory">The directory.</param>
+        /// <param name="filepattern">The filepattern.</param>
+        /// <param name="targetDirectory">The target directory.</param>
+        /// <param name="configurator">The configurator action for custom ZoomImage config (SizeCoeff...).</param>
+        /// <returns>A list of exceptions</returns>
+        public static List<Exception> ZoomifyDirectory(string directory, string filepattern, string targetDirectory, Action<ZoomifyImage> configurator = null)
+        {
+            var dinfo = new DirectoryInfo(directory);
+            if(!dinfo.Exists)
+                throw new DirectoryNotFoundException(String.Format("The directory {0} doesn't exist",directory));
+            var files = dinfo.GetFiles(filepattern);
+            var res = new List<Exception>();
+            foreach (var fileInfo in files)
+            {
+                try
+                {
+                    var img = new ZoomifyImage(fileInfo.FullName);
+                    if (configurator != null)
+                        configurator(img);
+                    img.Zoomify(targetDirectory + "\\" + Path.GetFileNameWithoutExtension(fileInfo.FullName));
+                }
+                catch (Exception exception)
+                {
+                    res.Add(exception);
+                }
+            }
+            return res;
         }
 
         private void CreateTileDefinitions()

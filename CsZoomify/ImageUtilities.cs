@@ -11,7 +11,6 @@ namespace CsZoomify
     {
         internal static void Crop(Image originalimg, Rectangle rectangle, Size newSize, string filename)
         {
-
             using (var thumbnail = new Bitmap(Convert.ToInt32(newSize.Width), Convert.ToInt32(newSize.Height)))
             {
                 var objGraphics = Graphics.FromImage(thumbnail);
