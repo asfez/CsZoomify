@@ -117,10 +117,11 @@ namespace CsZoomifyTest
             {
                 try
                 {
-                    var img = new ZoomifyImage(fileInfo.FullName);
-                    if (configurator != null)
-                        configurator(img);
-                    img.Zoomify(targetDirectory + "\\" + Path.GetFileNameWithoutExtension(fileInfo.FullName));
+                    using(var img = new ZoomifyImage(fileInfo.FullName)){
+                        if (configurator != null)
+                            configurator(img);
+                        img.Zoomify(targetDirectory + "\\" + Path.GetFileNameWithoutExtension(fileInfo.FullName));
+                    }
                 }
                 catch (Exception exception)
                 {
