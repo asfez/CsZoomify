@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using CsZoomify;
 
-namespace CsZoomifyTest
+namespace CsZoomify
 {
     class Program
     {

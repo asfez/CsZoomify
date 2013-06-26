@@ -9,7 +9,7 @@ using CsZoomify;
 
 #endregion
 
-namespace CsZoomifyTest
+namespace CsZoomify
 {
     public class ZoomifyImage : IDisposable
     {
@@ -47,21 +47,35 @@ namespace CsZoomifyTest
         /// </summary>
         public Double[] SizeCoeffByZoomLevel { get; private set; }
 
+
+        public ZoomifyImage(Image image, int tileSize = 256)
+        {
+            Image = image;
+            TileSize = tileSize;
+            Init();
+        }
+
         public ZoomifyImage(string filename, int tileSize = 256)
         {
             if(!File.Exists(filename))
                 throw new FileNotFoundException("The image does't exist",filename);
-            TileSize = tileSize;
-            Tiles = new List<Tile>();
+            
             Image = Image.FromFile(filename);
-            Size = Image.Size;
+            TileSize = tileSize;
+            Init();
+        }
 
+        public void Init()
+        {
+            Size = Image.Size;
+          
+            Tiles = new List<Tile>();
             var maxsize = Math.Max(Size.Width, Size.Height);
             var zoom = 1;
             var tmp = maxsize;
             while (tmp > TileSize)
             {
-                tmp = tmp/2;
+                tmp = tmp / 2;
                 zoom++;
             }
             ZoomLevels = zoom;
