@@ -11,3 +11,6 @@ zimg.Zoomify("target directory");
 
 
 Use jZoomifyImage (https://github.com/asfez/jZoomifyImage) to display it on the web.
+
+
+Example of use : http://az416810.vo.msecnd.net/doc24/zh/12
